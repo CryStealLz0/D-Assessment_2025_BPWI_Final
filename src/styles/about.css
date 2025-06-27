@@ -1,0 +1,71 @@
+.about {
+    background-color: var(--color-gray);
+    padding: 2rem;
+    border-radius: 12px;
+    color: var(--color-light);
+}
+
+.about__title {
+    text-align: center;
+    color: var(--color-primary-light);
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    margin-bottom: 4rem;
+    font-size: 1.8rem;
+}
+
+.about__subtitle {
+    margin-top: 2rem;
+    color: var(--color-primary-light);
+    text-shadow: 2px 2px 5px black;
+}
+
+.about__description {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.about__list {
+    list-style: none;
+    padding-left: 0;
+    margin: 1rem 0;
+}
+
+.about__item {
+    margin-bottom: 0.5rem;
+    background-color: var(--color-dark);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+}
+
+.about__features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.about__feature-card {
+    background-color: var(--color-dark);
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 173, 181, 0.1);
+}
+
+.about__feature-title {
+    color: var(--color-primary-light);
+    text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+    margin-bottom: 0.5rem;
+}
+
+.about__feature-desc {
+    color: var(--color-light);
+    font-size: 0.95rem;
+}
+
+.about__footer {
+    text-align: center;
+    margin-top: 2rem;
+    font-style: italic;
+    color: #ccc;
+}

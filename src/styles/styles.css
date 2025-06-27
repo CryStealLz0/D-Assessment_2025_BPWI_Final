@@ -1,0 +1,174 @@
+@import url(./transition.css);
+@import url(./utility.css);
+@import url(./header.css);
+@import url(./home.css);
+@import url(./about.css);
+@import url(./form.css);
+@import url(./detail.css);
+@import url(./login.css);
+@import url(./regis.css);
+@import url(./footer.css);
+
+:root {
+    --color-dark: #222831;
+    --color-gray: #393e46;
+    --color-primary: #00adb5;
+    --color-primary-light: rgb(0, 230, 230);
+    --color-light: #eeeeee;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-gray);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-primary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: aqua;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background-color: var(--color-dark);
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.skip-link {
+    position: absolute;
+    top: -100px;
+    left: 0;
+    background: #00adb5;
+    color: white;
+    padding: 1.6rem 1rem;
+    z-index: 1000;
+    text-decoration: none;
+    transition: top 0.3s ease-in-out;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+main#main-content {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 2rem;
+}
+
+.navigation-drawer {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+
+.navigation-drawer.open {
+    transform: translateX(0);
+}
+
+@media screen and (width > 1000px) {
+    .navigation-drawer {
+        min-height: auto;
+        width: auto;
+        padding: 0;
+        background-color: transparent;
+
+        flex-direction: row;
+        justify-content: space-between;
+
+        position: static;
+        box-shadow: none;
+        transform: translateX(0);
+    }
+
+    .nav-list {
+        flex-direction: row;
+        color: white;
+    }
+
+    .nav-list li a {
+        display: inline-block;
+    }
+
+    .drawer-button {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .story-card__image {
+        height: 180px;
+    }
+
+    .story-card__description,
+    .story-card__location,
+    .story-card__date {
+        font-size: 0.85rem;
+    }
+
+    .story-card__link {
+        font-size: 0.95rem;
+    }
+
+    .home {
+        padding: 2rem 0rem;
+    }
+
+    .home__title {
+        font-size: 1.5rem;
+    }
+
+    .home__profile {
+        margin: 1rem 1rem;
+    }
+
+    .profile__name {
+        font-size: 1rem;
+    }
+
+    .home__map {
+        margin: 2.5rem 1rem;
+    }
+
+    main#main-content {
+        padding: 2rem 0rem;
+    }
+
+    .footer-toggle {
+        bottom: 0.2rem;
+        left: 1rem;
+        right: auto;
+        transition: 0.3s ease;
+        border-radius: 0px;
+    }
+
+    .footer-toggle--responsif {
+        bottom: calc(4rem - 3px);
+        left: 1rem;
+        right: 1rem;
+    }
+}

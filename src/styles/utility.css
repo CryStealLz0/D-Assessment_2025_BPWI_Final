@@ -1,0 +1,15 @@
+.btn-style,
+input[type='submit'] {
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.btn-style:hover {
+    background-color: #029ca5;
+}

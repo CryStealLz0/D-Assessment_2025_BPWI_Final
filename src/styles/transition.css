@@ -1,0 +1,65 @@
+header {
+    view-transition-name: header;
+}
+
+::view-transition-old(root) {
+    animation-name: full-slide-to-left;
+    animation-duration: 900ms;
+    animation-timing-function: ease-out;
+}
+
+::view-transition-new(root) {
+    animation-name: full-slide-from-right;
+    animation-duration: 900ms;
+    animation-timing-function: ease-out;
+}
+
+@keyframes full-slide-from-right {
+    from {
+        transform: translateX(100%);
+    }
+}
+@keyframes full-slide-to-left {
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+@media screen and (width > 600px) {
+    ::view-transition-old(root) {
+        animation: fade-out 90ms both, slide-to-left 300ms both;
+    }
+
+    ::view-transition-new(root) {
+        animation: fade-in 210ms 90ms both, slide-from-right 300ms both;
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+}
+@keyframes fade-out {
+    to {
+        opacity: 0;
+    }
+}
+@keyframes slide-from-right {
+    from {
+        transform: translateX(30px);
+    }
+}
+@keyframes slide-to-left {
+    to {
+        transform: translateX(-30px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+        animation: none !important;
+    }
+}
