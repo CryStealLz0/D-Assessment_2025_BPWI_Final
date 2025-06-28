@@ -38,11 +38,13 @@ class App {
     }
 
     async renderPage() {
-        const guardedRoutes = ['#/tambah', '#/'];
+        const guardedRoutes = ['#/', '#/tambah'];
         if (!authGuard(guardedRoutes)) return;
 
         const url = getActiveRoute();
-        const page = routes[url];
+        const pageFactory = routes[url] || routes['/404']; // ✅ fallback
+
+        const page = pageFactory();
 
         const transition = transitionHelper({
             updateDOM: async () => {

@@ -1,3 +1,5 @@
 APP_URL=http://localhost:5173
 MAP_SERVICE_API_KEY=TZ8CPHGSs8sjj4jpKnxkM
 Peta digital menggunakan Leaflet dan OpenStreetMap. 
+
+https://storymapkita.netlify.app //isi dengan url deploy nanti
