@@ -1,5 +1,7 @@
 import { getToken } from '../utils/auth.js';
 import { DetailView } from '../views/detail-view.js';
+import { saveStoryDetail, getStoryDetail } from '../db.js';
+import CONFIG from '../config.js';
 
 export class DetailPresenter {
     constructor() {
@@ -11,20 +13,16 @@ export class DetailPresenter {
         const token = getToken();
 
         try {
-            const response = await fetch(
-                `https://story-api.dicoding.dev/v1/stories/${id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                },
-            );
+            const response = await fetch(`${CONFIG.BASE_URL}/stories/${id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
 
             const result = await response.json();
             if (!response.ok || result.error) throw new Error(result.message);
 
             const story = result.story;
             this.view.showDetail(story);
+            await saveStoryDetail(story);
 
             if (story.lat && story.lon) {
                 this.view.showMap(story);
@@ -32,7 +30,22 @@ export class DetailPresenter {
                 this.view.hideMap();
             }
         } catch (err) {
-            this.view.showError(err.message);
+            console.warn(
+                'Fetching detail failed, trying cache...',
+                err.message,
+            );
+
+            const cachedStory = await getStoryDetail(id);
+            if (cachedStory) {
+                this.view.showDetail(cachedStory);
+                if (cachedStory.lat && cachedStory.lon) {
+                    this.view.showMap(cachedStory);
+                } else {
+                    this.view.hideMap();
+                }
+            } else {
+                this.view.showError('Gagal memuat detail dan tidak ada cache.');
+            }
         }
     }
 }

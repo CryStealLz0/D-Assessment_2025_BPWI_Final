@@ -1,3 +1,5 @@
+import { saveStories, getStories } from '../db.js';
+
 export class HomePresenter {
     constructor(repository, view) {
         this.repository = repository;
@@ -5,23 +7,33 @@ export class HomePresenter {
     }
 
     async loadStories() {
-        try {
-            this.view.showLoading();
+        this.view.showLoading();
 
+        try {
             const stories = await this.repository.getStoriesWithLocation();
+
+            // ✅ Simpan ke IndexedDB agar bisa dipakai saat offline
+            await saveStories(stories);
+
             this.view.renderStories(stories);
         } catch (error) {
-            if (
-                error.message?.includes('Unauthorized') ||
-                error.message?.includes('Token')
-            ) {
-                localStorage.removeItem('token');
-                window.location.hash = '#/login';
-                return;
-            }
+            console.warn('Gagal fetch dari API, mencoba dari IndexedDB...');
 
-            console.error('Presenter Error:', error.message);
-            this.view.renderError(error.message || 'Gagal memuat cerita');
+            try {
+                const offlineStories = await getStories();
+
+                if (offlineStories.length > 0) {
+                    this.view.renderStories(offlineStories);
+                    return;
+                }
+
+                throw new Error('Tidak ada data offline tersimpan.');
+            } catch (fallbackError) {
+                console.error('Presenter Error:', fallbackError.message);
+                this.view.renderError(
+                    fallbackError.message || 'Gagal memuat cerita',
+                );
+            }
         }
     }
 }
