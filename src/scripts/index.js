@@ -8,11 +8,33 @@ import { renderFooterDropUp } from './pages/templates/footer.js';
 document.addEventListener('DOMContentLoaded', async () => {
     renderFooterDropUp();
 
+    // 1. Register SW dulu agar bisa langsung jadi controller
+    if ('serviceWorker' in navigator) {
+        try {
+            const reg = await navigator.serviceWorker.register(
+                '/service-worker.js',
+            );
+            console.log('✅ Service Worker registered:', reg);
+
+            // Reload otomatis jika belum dikontrol oleh SW
+            if (!navigator.serviceWorker.controller) {
+                console.warn(
+                    '⚠️ Service Worker belum mengontrol halaman. Reload...',
+                );
+                window.location.reload(); // ini hanya jalan sekali
+            }
+        } catch (err) {
+            console.error('❌ Service Worker failed:', err);
+        }
+    }
+
+    // 2. Notifikasi toggle
     const toggle = new NotificationToggle(
         'BCCs2eonMI-6H2ctvFaWg-UYdDv387Vno_bzUzALpB442r2lCnsHmtrx8biyPi_E-1fSGABK_Qs_GlvPoJJqxbk',
     );
     await toggle.afterRender();
 
+    // 3. Inisialisasi App
     const app = new App({
         content: document.querySelector('#main-content'),
         drawerButton: document.querySelector('#drawer-button'),
@@ -32,30 +54,31 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateAuthUI();
     });
 
-    // Skip-link
-    const mainContent = document.querySelector('#main-content');
-    const skipLink = document.querySelector('.skip-link');
-    if (skipLink && mainContent) {
-        skipLink.addEventListener('click', function (event) {
-            event.preventDefault();
-            skipLink.blur();
-            mainContent.setAttribute('tabindex', '-1');
-            mainContent.focus();
-            mainContent.scrollIntoView();
-        });
-    }
+    // const testPushBtn = document.querySelector('#btn-test-push');
+    // const logEl = document.querySelector('#subscription-log');
 
-    // PWA: register service worker
-    if ('serviceWorker' in navigator) {
-        try {
-            const reg = await navigator.serviceWorker.register(
-                '/service-worker.js',
-            );
-            console.log('✅ Service Worker registered:', reg);
-        } catch (err) {
-            console.error('❌ Service Worker failed:', err);
-        }
-    }
+    // if (testPushBtn && logEl) {
+    //     const reg = await navigator.serviceWorker.ready;
+    //     const sub = await reg.pushManager.getSubscription();
+
+    //     if (sub) {
+    //         logEl.textContent = JSON.stringify(sub.toJSON(), null, 2);
+    //     } else {
+    //         logEl.textContent = 'Belum berlangganan notifikasi.';
+    //     }
+
+    //     testPushBtn.addEventListener('click', () => {
+    //         if (navigator.serviceWorker.controller) {
+    //             navigator.serviceWorker.controller.postMessage({
+    //                 type: 'test-push',
+    //                 title: 'Tes Notifikasi dari StoryMapKita',
+    //                 body: 'Notifikasi ini dikirim dari halaman ke Service Worker.',
+    //             });
+    //         } else {
+    //             console.warn('Service Worker belum mengontrol halaman.');
+    //         }
+    //     });
+    // }
 });
 
 function handleLogout() {

@@ -14,6 +14,14 @@ header {
     align-items: center;
     color: white;
 }
+.brand {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    width: 4rem;
+}
 
 .brand-name {
     font-size: 1.125rem;
@@ -56,4 +64,8 @@ header {
 
 .nav-list a:hover {
     color: var(--color-primary);
+}
+
+#notification-toggle {
+    all: unset;
 }

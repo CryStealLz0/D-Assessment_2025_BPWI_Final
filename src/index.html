@@ -22,7 +22,10 @@
         <a href="#main-content" class="skip-link">Lewati ke Konten Utama</a>
         <header>
             <div class="main-header">
-                <a class="brand-name" href="#/">StoryMapKita</a>
+                <div class="brand">
+                    <img src="./public/icons/icon.png" alt="" class="logo" />
+                    <a class="brand-name" href="#/"> StoryMapKita</a>
+                </div>
 
                 <nav id="navigation-drawer" class="navigation-drawer">
                     <ul id="nav-list" class="nav-list">
@@ -34,19 +37,13 @@
                             <a href="#/tambah">Tambah</a>
                         </li>
                         <li class="auth-required">
-                            <label
-                                style="
-                                    display: flex;
-                                    align-items: center;
-                                    gap: 0.5rem;
-                                "
+                            <button
+                                id="notification-toggle"
+                                class="subscribe-btn"
                             >
-                                <input
-                                    type="checkbox"
-                                    id="notification-toggle"
-                                />
-                                Notifikasi
-                            </label>
+                                <span id="subscribe-text">Subscribe</span>
+                                <span id="subscribe-icon">🔔</span>
+                            </button>
                         </li>
                         <li>
                             <a href="#/login" id="loginLink" class="btn-style"
