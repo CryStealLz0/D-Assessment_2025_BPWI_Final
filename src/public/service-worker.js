@@ -5,40 +5,48 @@ const urlsToCache = [
     '/manifest.json',
     '/icons/icon.png',
     '/icons/icon-splash.png',
+    '/pages/offline/index.html', // ✅ offline fallback
 ];
 
-// Cache static files
+// Cache static files on install
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache)),
     );
-    self.skipWaiting();
+    self.skipWaiting(); // ✅ immediately activate
 });
 
-// Activate and clean old caches
+// Clean old cache on activate
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches
             .keys()
             .then((keys) =>
                 Promise.all(
-                    keys.map((key) => key !== CACHE_NAME && caches.delete(key)),
+                    keys.map((key) =>
+                        key !== CACHE_NAME ? caches.delete(key) : null,
+                    ),
                 ),
             ),
     );
-    self.clients.claim();
+    self.clients.claim(); // ✅ control all clients
 });
 
-// Intercept fetch for offline
+// Offline-first fetch with fallback to offline page
 self.addEventListener('fetch', (event) => {
     event.respondWith(
-        caches
-            .match(event.request)
-            .then((resp) => resp || fetch(event.request)),
+        caches.match(event.request).then((resp) => {
+            return (
+                resp ||
+                fetch(event.request).catch(() =>
+                    caches.match('/pages/offline/index.html'),
+                )
+            );
+        }),
     );
 });
 
-// Handle push
+// Push notification handler
 self.addEventListener('push', (event) => {
     const data = event.data?.json() || {};
     const title = data.title || 'StoryMapKita';
@@ -49,7 +57,7 @@ self.addEventListener('push', (event) => {
     event.waitUntil(self.registration.showNotification(title, options));
 });
 
-// Handle test message
+// Message handler (for test-push or other future events)
 self.addEventListener('message', (event) => {
     if (event.data?.type === 'test-push') {
         self.registration.showNotification(event.data.title, {

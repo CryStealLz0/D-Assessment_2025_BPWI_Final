@@ -1,3 +1,4 @@
+// === src/components/notification-toggle.js ===
 import { NotificationPresenter } from '../presenters/notification-presenter.js';
 import { NotificationRepository } from '../data/notification-repository.js';
 import Swal from 'sweetalert2';
@@ -6,6 +7,7 @@ export class NotificationToggle {
     constructor(vapidKey) {
         this.vapidKey = vapidKey;
         this.toggleEl = document.querySelector('#notification-toggle');
+        this.statusLabel = document.querySelector('#notif-status-label');
     }
 
     async afterRender() {
@@ -19,18 +21,16 @@ export class NotificationToggle {
             },
         );
 
-        // Set checkbox from localStorage
         const savedStatus =
             localStorage.getItem('notif-toggle-enabled') === 'true';
         this.toggleEl.checked = savedStatus;
+        this.#updateStatusLabel(savedStatus);
 
-        // Jika sudah aktif sebelumnya, coba subscribe ulang
         if (savedStatus) {
             try {
                 const permission = await Notification.requestPermission();
                 if (permission !== 'granted') {
-                    this.toggleEl.checked = false;
-                    localStorage.setItem('notif-toggle-enabled', false);
+                    this.#disableToggle();
                     return;
                 }
 
@@ -48,23 +48,21 @@ export class NotificationToggle {
                 }
             } catch (err) {
                 console.error('Gagal auto-subscribe', err);
-                this.toggleEl.checked = false;
-                localStorage.setItem('notif-toggle-enabled', false);
+                this.#disableToggle();
             }
         }
 
-        // Event toggle
         this.toggleEl.addEventListener('change', async () => {
             const isEnabled = this.toggleEl.checked;
             localStorage.setItem('notif-toggle-enabled', isEnabled);
+            this.#updateStatusLabel(isEnabled);
 
             if (isEnabled) {
                 try {
                     const permission = await Notification.requestPermission();
                     if (permission !== 'granted') {
                         alert('Izin notifikasi ditolak');
-                        this.toggleEl.checked = false;
-                        localStorage.setItem('notif-toggle-enabled', false);
+                        this.#disableToggle();
                         return;
                     }
 
@@ -84,8 +82,7 @@ export class NotificationToggle {
                     });
                 } catch (err) {
                     console.error('Gagal subscribe', err);
-                    this.toggleEl.checked = false;
-                    localStorage.setItem('notif-toggle-enabled', false);
+                    this.#disableToggle();
                 }
             } else {
                 try {
@@ -107,5 +104,18 @@ export class NotificationToggle {
                 }
             }
         });
+    }
+
+    #disableToggle() {
+        this.toggleEl.checked = false;
+        localStorage.setItem('notif-toggle-enabled', false);
+        this.#updateStatusLabel(false);
+    }
+
+    #updateStatusLabel(isEnabled) {
+        if (!this.statusLabel) return;
+        this.statusLabel.textContent = isEnabled
+            ? 'Status: Aktif'
+            : 'Status: Nonaktif';
     }
 }

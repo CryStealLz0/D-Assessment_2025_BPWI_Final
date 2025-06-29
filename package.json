@@ -12,7 +12,24 @@
         "vite": "^6.2.0"
     },
     "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^5.1.0",
+        "idb": "^8.0.3",
         "leaflet": "^1.9.4",
-        "sweetalert2": "^11.21.2"
-    }
+        "sweetalert2": "^11.21.2",
+        "web-push": "^3.6.7"
+    },
+    "main": "vite.config.js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/CryStealLz0/D-Assessment_2025_BPWI_Final.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/CryStealLz0/D-Assessment_2025_BPWI_Final/issues"
+    },
+    "homepage": "https://github.com/CryStealLz0/D-Assessment_2025_BPWI_Final#readme",
+    "description": ""
 }

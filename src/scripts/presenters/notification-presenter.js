@@ -6,14 +6,11 @@ export class NotificationPresenter {
 
     async subscribe(subscription) {
         try {
-            const data = {
-                endpoint: subscription.endpoint,
-                keys: subscription.toJSON().keys,
-            };
-            await this.repository.subscribe(data);
+            const { endpoint, keys } = subscription.toJSON();
+            await this.repository.subscribe({ endpoint, keys });
             this.view.showSuccess('Berhasil berlangganan notifikasi!');
         } catch (error) {
-            this.view.showError(error.message);
+            this.view.showError(error.message || 'Gagal berlangganan.');
         }
     }
 
@@ -22,7 +19,9 @@ export class NotificationPresenter {
             await this.repository.unsubscribe(subscription.endpoint);
             this.view.showSuccess('Berhasil berhenti berlangganan notifikasi!');
         } catch (error) {
-            this.view.showError(error.message);
+            this.view.showError(
+                error.message || 'Gagal berhenti berlangganan.',
+            );
         }
     }
 }

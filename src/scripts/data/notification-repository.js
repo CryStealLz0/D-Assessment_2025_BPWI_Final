@@ -4,7 +4,7 @@ import CONFIG from '../config.js';
 export class NotificationRepository {
     async subscribe(payload) {
         const response = await fetch(
-            `${CONFIG.BASE_URL}/notifications/subscribe`,
+            `${CONFIG.NOTIF_BASE_URL}${CONFIG.SUBSCRIBE}`,
             {
                 method: 'POST',
                 headers: {
@@ -15,14 +15,13 @@ export class NotificationRepository {
             },
         );
 
-        const result = await response.json();
-        if (!response.ok) throw new Error(result.message);
+        const result = await this._parseResponse(response);
         return result;
     }
 
     async unsubscribe(endpoint) {
         const response = await fetch(
-            `${CONFIG.BASE_URL}/notifications/subscribe`,
+            `${CONFIG.NOTIF_BASE_URL}${CONFIG.SUBSCRIBE}`,
             {
                 method: 'DELETE',
                 headers: {
@@ -33,8 +32,19 @@ export class NotificationRepository {
             },
         );
 
-        const result = await response.json();
-        if (!response.ok) throw new Error(result.message);
+        const result = await this._parseResponse(response);
+        return result;
+    }
+
+    async _parseResponse(response) {
+        let result;
+        try {
+            result = await response.json();
+        } catch (e) {
+            throw new Error('Gagal memproses respon server.');
+        }
+        if (!response.ok)
+            throw new Error(result?.message || 'Terjadi kesalahan server.');
         return result;
     }
 }
