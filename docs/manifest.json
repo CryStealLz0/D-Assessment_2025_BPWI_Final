@@ -1,0 +1,20 @@
+{
+    "name": "StoryMapKita",
+    "short_name": "StoryMap",
+    "start_url": "/D-Assessment_2025_BPW1_Final/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#00ADB5",
+    "icons": [
+        {
+            "src": "icons/icon.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/icon-splash.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
