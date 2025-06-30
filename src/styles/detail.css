@@ -12,16 +12,22 @@
     font-size: 1.8rem;
 }
 
+.detail__buttons {
+    padding-top: 3rem;
+}
+
 .detail__back-link {
     width: 100%;
     text-align: center;
     display: inline-block;
-    margin-top: 4rem;
     margin-bottom: 1rem;
     text-decoration: none;
     color: var(--color-primary);
+    font-size: 1rem;
     font-weight: 500;
     transition: color 0.2s ease;
+    border: none;
+    background-color: transparent;
 }
 
 .detail__back-link:hover {

@@ -1,0 +1,109 @@
+.bookmark {
+    max-width: 960px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+.bookmark__header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 3px solid var(--color-primary);
+    background-color: var(--color-gray);
+    padding: 0.5rem 1rem;
+    border-radius: 6px 6px 0 0;
+}
+
+.bookmark__title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--color-light);
+    margin: 0;
+}
+
+.bookmark__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.bookmark__empty,
+.bookmark__error {
+    text-align: center;
+    color: var(--color-light);
+    grid-column: 1 / -1;
+    opacity: 0.7;
+}
+
+.bookmark__card {
+    background-color: var(--color-gray);
+    color: var(--color-light);
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.bookmark__card:hover {
+    box-shadow: 0 4px 12px rgba(0, 173, 181, 0.2);
+}
+
+.bookmark__image-wrapper {
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+    border-radius: 6px;
+}
+
+.bookmark__image {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    display: block;
+}
+
+.bookmark__caption {
+    display: none;
+}
+
+.bookmark__content {
+    flex-grow: 1;
+}
+
+.bookmark__name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+
+.bookmark__description {
+    font-size: 0.9rem;
+    color: var(--color-light);
+}
+
+.bookmark__actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+.bookmark__button {
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.bookmark__button--view {
+    text-decoration: none;
+    color: var(--color-primary);
+}
+
+.bookmark__button--delete {
+    color: #d43f3a;
+    text-decoration: none;
+}

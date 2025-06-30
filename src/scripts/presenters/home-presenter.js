@@ -1,4 +1,4 @@
-import { saveStories, getStories } from '../db.js';
+import { saveStories, getAllStories } from '../db.js';
 
 export class HomePresenter {
     constructor(repository, view) {
@@ -12,7 +12,6 @@ export class HomePresenter {
         try {
             const stories = await this.repository.getStoriesWithLocation();
 
-            // ✅ Simpan ke IndexedDB agar bisa dipakai saat offline
             await saveStories(stories);
 
             this.view.renderStories(stories);
@@ -20,7 +19,7 @@ export class HomePresenter {
             console.warn('Gagal fetch dari API, mencoba dari IndexedDB...');
 
             try {
-                const offlineStories = await getStories();
+                const offlineStories = await getAllStories();
 
                 if (offlineStories.length > 0) {
                     this.view.renderStories(offlineStories);

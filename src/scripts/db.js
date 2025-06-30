@@ -1,58 +1,52 @@
-const DB_NAME = 'StoryMapKitaDB';
-const DB_VERSION = 1;
-const STORE_NAME = 'stories';
+import {
+    openDatabase,
+    putItem,
+    getItem,
+    getAllItems,
+    removeItem,
+    STORE_NAMES,
+} from './utils/indexeddb-helper';
 
-function openDB() {
-    return new Promise((resolve, reject) => {
-        const request = indexedDB.open(DB_NAME, DB_VERSION);
-
-        request.onupgradeneeded = (event) => {
-            const db = event.target.result;
-            if (!db.objectStoreNames.contains(STORE_NAME)) {
-                db.createObjectStore(STORE_NAME, { keyPath: 'id' });
-            }
-        };
-
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-    });
-}
-
-export async function saveStoryDetail(story) {
-    const db = await openDB(); // ✅ fix
-    const tx = db.transaction(STORE_NAME, 'readwrite');
-    tx.objectStore(STORE_NAME).put(story);
-    return tx.complete;
-}
-
-export async function getStoryDetail(id) {
-    const db = await openDB(); // ✅ fix
-    const tx = db.transaction(STORE_NAME, 'readonly');
-    const store = tx.objectStore(STORE_NAME);
-    return new Promise((resolve, reject) => {
-        const request = store.get(id);
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-    });
+/** STORIES (OFFLINE CACHE) **/
+export async function saveStory(story) {
+    const db = await openDatabase();
+    return putItem(db, STORE_NAMES.STORIES, story);
 }
 
 export async function saveStories(stories) {
-    const db = await openDB();
-    const tx = db.transaction(STORE_NAME, 'readwrite');
-    const store = tx.objectStore(STORE_NAME);
+    const db = await openDatabase();
     for (const story of stories) {
-        store.put(story);
+        await putItem(db, STORE_NAMES.STORIES, story);
     }
-    return tx.complete;
 }
 
-export async function getStories() {
-    const db = await openDB();
-    const tx = db.transaction(STORE_NAME, 'readonly');
-    const store = tx.objectStore(STORE_NAME);
-    return new Promise((resolve, reject) => {
-        const request = store.getAll();
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-    });
+export async function getStory(id) {
+    const db = await openDatabase();
+    return getItem(db, STORE_NAMES.STORIES, id);
+}
+
+export async function getAllStories() {
+    const db = await openDatabase();
+    return getAllItems(db, STORE_NAMES.STORIES);
+}
+
+/** BOOKMARKS **/
+export async function saveBookmark(story) {
+    const db = await openDatabase();
+    return putItem(db, STORE_NAMES.BOOKMARKS, story);
+}
+
+export async function getBookmark(id) {
+    const db = await openDatabase();
+    return getItem(db, STORE_NAMES.BOOKMARKS, id);
+}
+
+export async function getAllBookmarks() {
+    const db = await openDatabase();
+    return getAllItems(db, STORE_NAMES.BOOKMARKS);
+}
+
+export async function deleteBookmark(id) {
+    const db = await openDatabase();
+    return removeItem(db, STORE_NAMES.BOOKMARKS, id);
 }

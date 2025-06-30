@@ -42,7 +42,7 @@ class App {
         if (!authGuard(guardedRoutes)) return;
 
         const url = getActiveRoute();
-        const pageFactory = routes[url] || routes['/404']; // ✅ fallback
+        const pageFactory = routes[url] || routes['/404'];
 
         const page = pageFactory();
 

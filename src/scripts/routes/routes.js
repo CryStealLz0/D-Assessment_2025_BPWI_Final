@@ -4,6 +4,7 @@ import { LoginPage } from '../pages/login-register/login-page.js';
 import { RegisterPage } from '../pages/login-register/register-page.js';
 import { FormPage } from '../pages/form/form-page.js';
 import { DetailPage } from '../pages/detail/detail-page.js';
+import BookmarkPage from '../pages/bookmarked/bookmarked-page.js';
 
 const isLoggedIn = () => !!localStorage.getItem('token');
 
@@ -23,6 +24,7 @@ const routes = {
     '/about': () => new AboutPage(),
     '/tambah': () => new FormPage(),
     '/detail/:id': () => new DetailPage(),
+    '/bookmark': () => new BookmarkPage(),
     '/404': () => ({
         render: () =>
             Promise.resolve(
