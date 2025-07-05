@@ -4,61 +4,61 @@ import { authGuard } from '../middleware/auth-guard.js';
 import { transitionHelper } from '../utils/index.js';
 
 class App {
-    #content = null;
-    #drawerButton = null;
-    #navigationDrawer = null;
+  #content = null;
+  #drawerButton = null;
+  #navigationDrawer = null;
 
-    constructor({ navigationDrawer, drawerButton, content }) {
-        this.#content = content;
-        this.#drawerButton = drawerButton;
-        this.#navigationDrawer = navigationDrawer;
+  constructor({ navigationDrawer, drawerButton, content }) {
+    this.#content = content;
+    this.#drawerButton = drawerButton;
+    this.#navigationDrawer = navigationDrawer;
 
-        this.#setupDrawer();
-    }
+    this.#setupDrawer();
+  }
 
-    #setupDrawer() {
-        this.#drawerButton.addEventListener('click', () => {
-            this.#navigationDrawer.classList.toggle('open');
-        });
+  #setupDrawer() {
+    this.#drawerButton.addEventListener('click', () => {
+      this.#navigationDrawer.classList.toggle('open');
+    });
 
-        document.body.addEventListener('click', (event) => {
-            if (
-                !this.#navigationDrawer.contains(event.target) &&
-                !this.#drawerButton.contains(event.target)
-            ) {
-                this.#navigationDrawer.classList.remove('open');
-            }
+    document.body.addEventListener('click', (event) => {
+      if (
+        !this.#navigationDrawer.contains(event.target) &&
+        !this.#drawerButton.contains(event.target)
+      ) {
+        this.#navigationDrawer.classList.remove('open');
+      }
 
-            this.#navigationDrawer.querySelectorAll('a').forEach((link) => {
-                if (link.contains(event.target)) {
-                    this.#navigationDrawer.classList.remove('open');
-                }
-            });
-        });
-    }
+      this.#navigationDrawer.querySelectorAll('a').forEach((link) => {
+        if (link.contains(event.target)) {
+          this.#navigationDrawer.classList.remove('open');
+        }
+      });
+    });
+  }
 
-    async renderPage() {
-        const guardedRoutes = ['#/', '#/tambah'];
-        if (!authGuard(guardedRoutes)) return;
+  async renderPage() {
+    const guardedRoutes = ['#/', '#/tambah'];
+    if (!authGuard(guardedRoutes)) return;
 
-        const url = getActiveRoute();
-        const pageFactory = routes[url] || routes['/404'];
+    const url = getActiveRoute();
+    const pageFactory = routes[url] || routes['/404'];
 
-        const page = pageFactory();
+    const page = pageFactory();
 
-        const transition = transitionHelper({
-            updateDOM: async () => {
-                const html = await page.render();
-                if (!html) throw new Error('Render returned undefined/null!');
-                this.#content.innerHTML = html;
-                await page.afterRender();
-            },
-        });
+    const transition = transitionHelper({
+      updateDOM: async () => {
+        const html = await page.render();
+        if (!html) throw new Error('Render returned undefined/null!');
+        this.#content.innerHTML = html;
+        await page.afterRender();
+      },
+    });
 
-        transition.updateCallbackDone?.then(() => {
-            scrollTo({ top: 0, behavior: 'instant' });
-        });
-    }
+    transition.updateCallbackDone?.then(() => {
+      scrollTo({ top: 0, behavior: 'instant' });
+    });
+  }
 }
 
 export default App;
