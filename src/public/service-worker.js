@@ -29,6 +29,24 @@ self.addEventListener('activate', (event) => {
     self.clients.claim();
 });
 
+self.addEventListener('push', (event) => {
+    console.log('Service worker pushing...');
+
+    async function chainPromise() {
+        const data = await event.data.json();
+        await self.registration.showNotification(data.title, {
+            body: data.options.body,
+        });
+    }
+
+    event.waitUntil(chainPromise());
+});
+
+self.addEventListener('notificationclick', function (event) {
+    event.notification.close();
+    event.waitUntil(clients.openWindow(event.notification.data?.url || '/'));
+});
+
 // Intercept fetch requests
 self.addEventListener('fetch', (event) => {
     if (event.request.method !== 'GET') return;
