@@ -1,13 +1,13 @@
 import { AvatarProfile } from '../../components/avatar-profile';
 
 class MyProfile extends HTMLElement {
-    connectedCallback() {
-        this.render();
-    }
+  connectedCallback() {
+    this.render();
+  }
 
-    render() {
-        const name = localStorage.getItem('userName') || 'Guest';
-        this.innerHTML = `
+  render() {
+    const name = localStorage.getItem('userName') || 'Guest';
+    this.innerHTML = `
       <section class="home__profile">
         <div id="avatar-container" class="profile__avatar"></div>
         <div class="profile__container">
@@ -17,15 +17,15 @@ class MyProfile extends HTMLElement {
       </section>
     `;
 
-        const avatar = new AvatarProfile('avatar-container', name);
-        avatar.generate();
+    const avatar = new AvatarProfile('avatar-container', name);
+    avatar.generate();
 
-        this.querySelector('#user-name').textContent = name;
+    this.querySelector('#user-name').textContent = name;
 
-        this.querySelector('#add-story-btn').addEventListener('click', () => {
-            window.location.hash = '#/tambah';
-        });
-    }
+    this.querySelector('#add-story-btn').addEventListener('click', () => {
+      window.location.hash = '#/tambah';
+    });
+  }
 }
 
 customElements.define('my-profile', MyProfile);
