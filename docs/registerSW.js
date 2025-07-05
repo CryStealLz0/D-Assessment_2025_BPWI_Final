@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/D-Assessment_2025_BPW1_Final/service-worker.js', { scope: '/D-Assessment_2025_BPW1_Final/' })})}

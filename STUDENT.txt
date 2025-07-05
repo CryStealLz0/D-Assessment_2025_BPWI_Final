@@ -2,4 +2,4 @@ APP_URL=http://localhost:5173
 MAP_SERVICE_API_KEY=TZ8CPHGSs8sjj4jpKnxkM
 Peta digital menggunakan Leaflet dan OpenStreetMap. 
 
-https://storymapkita.netlify.app
+https://crysteallz0.github.io/D-Assessment_2025_BPWI_Final/

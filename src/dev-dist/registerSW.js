@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/D-Assessment_2025_BPW1_Final/dev-sw.js?dev-sw', { scope: '/D-Assessment_2025_BPW1_Final/', type: 'module' })
