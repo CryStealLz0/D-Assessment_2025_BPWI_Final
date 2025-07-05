@@ -5,6 +5,9 @@ import { showFormattedDate } from '../../utils/index.js';
 import { AvatarProfile } from '../../components/avatar-profile.js';
 import '../templates/my-profile.js';
 import L from 'leaflet';
+import { applyDefaultLeafletIcon } from '../../utils/leaflet-icon-override.js';
+
+applyDefaultLeafletIcon();
 
 export class HomePage {
     constructor() {
