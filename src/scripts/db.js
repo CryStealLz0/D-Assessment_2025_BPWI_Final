@@ -15,8 +15,22 @@ export async function saveStory(story) {
 
 export async function saveStories(stories) {
     const db = await openDatabase();
+    const cache = await caches.open('story-images');
+
     for (const story of stories) {
         await putItem(db, STORE_NAMES.STORIES, story);
+
+        // Simpan gambar ke Cache Storage (jika tersedia)
+        if (story.photoUrl) {
+            try {
+                const response = await fetch(story.photoUrl);
+                if (response.ok) {
+                    await cache.put(story.photoUrl, response.clone());
+                }
+            } catch (err) {
+                console.warn('Gagal cache gambar:', story.photoUrl, err);
+            }
+        }
     }
 }
 

@@ -11,12 +11,9 @@ let hasInitializedNotification = false;
 document.addEventListener('DOMContentLoaded', async () => {
     renderFooterDropUp();
 
-    // 1. Register SW
     if ('serviceWorker' in navigator) {
         try {
-            const reg = await navigator.serviceWorker.register(
-                '/service-worker.js',
-            );
+            const reg = await navigator.serviceWorker.register('/sw.js');
             console.log('✅ Service Worker registered:', reg);
 
             if (!navigator.serviceWorker.controller) {
@@ -30,7 +27,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // 2. Inisialisasi App
     const app = new App({
         content: document.querySelector('#main-content'),
         drawerButton: document.querySelector('#drawer-button'),
@@ -63,7 +59,7 @@ function handleLogout() {
     });
     updateAuthUI();
     window.location.hash = '#/login';
-    hasInitializedNotification = false; // reset agar bisa login ulang dan trigger notifikasi lagi
+    hasInitializedNotification = false;
 }
 
 function updateAuthUI() {

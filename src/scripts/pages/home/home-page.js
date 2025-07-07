@@ -3,6 +3,7 @@ import { HomePresenter } from '../../presenters/home-presenter.js';
 import { requireAuth } from '../../middleware/auth-middleware.js';
 import { showFormattedDate } from '../../utils/index.js';
 import { AvatarProfile } from '../../components/avatar-profile.js';
+import { getLocationName } from '../../utils/geocode-helper.js';
 import '../templates/my-profile.js';
 import L from 'leaflet';
 import { applyDefaultLeafletIcon } from '../../utils/leaflet-icon-override.js';
@@ -53,11 +54,12 @@ export class HomePage {
         if (container) container.innerHTML = 'Memuat cerita...';
     }
 
-    renderStories(stories) {
+    async renderStories(stories) {
         const container = document.querySelector('.home__story-list');
         container.innerHTML = '';
 
-        stories.forEach((story, index) => {
+        for (let index = 0; index < stories.length; index++) {
+            const story = stories[index];
             const item = document.createElement('article');
             item.className = 'story-card';
             item.setAttribute('role', 'article');
@@ -70,11 +72,11 @@ export class HomePage {
                 <div id="${avatarId}" class="story-card__avatar"></div>
                 <h3 class="story-card__name">${story.name}</h3>
               </div>
-              <img src="${story.photoUrl}" alt="Cerita oleh ${
+              <img id="story-photo-${index}" class="story-card__image" loading="lazy" alt="Foto oleh ${
                 story.name
-            }" class="story-card__image" loading="lazy" />
+            }" />
               <p class="story-card__description">${story.description}</p>
-              <p id="${locationId}" class="story-card__location">Memuat lokasi...</p>
+              <p id="${locationId}" class="story-card__location">📍 Memuat lokasi...</p>
               <small class="story-card__date"><strong>Tanggal:</strong> ${showFormattedDate(
                   story.createdAt,
                   'id-ID',
@@ -89,29 +91,28 @@ export class HomePage {
             const avatar = new AvatarProfile(avatarId, story.name);
             avatar.generate(40);
 
-            const locationElem = document.getElementById(locationId);
-            const key = 'Z8CPHGSs8sjj4jpKnxkM';
+            const photoElem = document.getElementById(`story-photo-${index}`);
+            photoElem.src = await this.#getCachedImageOrFallback(
+                story.photoUrl,
+            );
+            photoElem.alt = `Foto cerita oleh ${story.name}`;
 
-            if (story.lat && story.lon) {
-                fetch(
-                    `https://api.maptiler.com/geocoding/${story.lon},${story.lat}.json?key=${key}`,
-                )
-                    .then((res) => res.json())
-                    .then((data) => {
-                        const placeName =
-                            data?.features?.[0]?.place_name ||
-                            'Lokasi tersedia';
-                        if (locationElem) locationElem.textContent = placeName;
-                    })
-                    .catch(() => {
-                        if (locationElem)
-                            locationElem.textContent = 'Lokasi tersedia';
-                    });
+            const locationElem = document.getElementById(locationId);
+            if (story.lat && story.lon && locationElem) {
+                try {
+                    const placeName = await getLocationName(
+                        story.lat,
+                        story.lon,
+                    );
+                    locationElem.textContent = `${placeName}`;
+                } catch {
+                    locationElem.textContent = 'Lokasi tidak tersedia';
+                }
             } else {
                 if (locationElem)
                     locationElem.textContent = 'Lokasi tidak tersedia';
             }
-        });
+        }
 
         this.#initMap(stories);
     }
@@ -122,26 +123,35 @@ export class HomePage {
             container.innerHTML = `<p style="color:red">${message}</p>`;
     }
 
+    async #getCachedImageOrFallback(url, fallback = '/images/placeholder.png') {
+        try {
+            const cache = await caches.open('story-images');
+            const cachedResponse = await cache.match(url);
+            if (cachedResponse) {
+                const blob = await cachedResponse.blob();
+                return URL.createObjectURL(blob);
+            }
+            return url;
+        } catch {
+            return fallback;
+        }
+    }
+
     #initMap(stories) {
         const mapContainer = document.getElementById('map');
-        if (!mapContainer) {
-            console.warn('Map container tidak ditemukan.');
-            return;
-        }
+        if (!mapContainer) return;
 
-        if (this._map) {
-            this._map.remove();
-        }
-
+        if (this._map) this._map.remove();
         this._map = L.map(mapContainer).setView([-2.5, 118], 4);
-        const key = 'Z8CPHGSs8sjj4jpKnxkM';
 
+        const key = 'Z8CPHGSs8sjj4jpKnxkM';
         const openStreetMap = L.tileLayer(
             'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             {
                 attribution: '&copy; OpenStreetMap contributors',
             },
         );
+        openStreetMap.addTo(this._map);
 
         const mapTilerDark = L.tileLayer(
             `https://api.maptiler.com/maps/toner-dark/{z}/{x}/{y}.png?key=${key}`,
@@ -161,25 +171,18 @@ export class HomePage {
             },
         );
 
-        openStreetMap.addTo(this._map);
-
-        const baseLayers = {
-            OpenStreetMap: openStreetMap,
-            'Dark (MapTiler)': mapTilerDark,
-            'Streets (MapTiler)': mapTilerStreets,
-        };
-        L.control.layers(baseLayers).addTo(this._map);
+        L.control
+            .layers({
+                OpenStreetMap: openStreetMap,
+                'Dark (MapTiler)': mapTilerDark,
+                'Streets (MapTiler)': mapTilerStreets,
+            })
+            .addTo(this._map);
 
         stories.forEach((story) => {
             if (story.lat && story.lon) {
-                fetch(
-                    `https://api.maptiler.com/geocoding/${story.lon},${story.lat}.json?key=${key}`,
-                )
-                    .then((res) => res.json())
-                    .then((data) => {
-                        const placeName =
-                            data?.features?.[0]?.place_name ||
-                            'Lokasi tidak diketahui';
+                getLocationName(story.lat, story.lon)
+                    .then((placeName) => {
                         const marker = L.marker([story.lat, story.lon]).addTo(
                             this._map,
                         );

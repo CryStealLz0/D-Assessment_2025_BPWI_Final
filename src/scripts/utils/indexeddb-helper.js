@@ -1,9 +1,10 @@
 const DB_NAME = 'StoryMapKitaDB';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 export const STORE_NAMES = {
     STORIES: 'stories',
     BOOKMARKS: 'bookmarks',
+    GEOCODE: 'geocode',
 };
 
 export function openDatabase() {
@@ -19,6 +20,10 @@ export function openDatabase() {
 
             if (!db.objectStoreNames.contains(STORE_NAMES.BOOKMARKS)) {
                 db.createObjectStore(STORE_NAMES.BOOKMARKS, { keyPath: 'id' });
+            }
+
+            if (!db.objectStoreNames.contains(STORE_NAMES.GEOCODE)) {
+                db.createObjectStore(STORE_NAMES.GEOCODE, { keyPath: 'id' });
             }
         };
 
@@ -56,5 +61,11 @@ export function getAllItems(db, storeName) {
 export function removeItem(db, storeName, id) {
     const tx = db.transaction(storeName, 'readwrite');
     tx.objectStore(storeName).delete(id);
+    return tx.complete;
+}
+
+export function clearStore(db, storeName) {
+    const tx = db.transaction(storeName, 'readwrite');
+    tx.objectStore(storeName).clear();
     return tx.complete;
 }
